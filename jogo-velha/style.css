@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+	font-family: Poppins;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100dvh;
+	font-family: sans-serif;
+	padding: 0;
+}
+
+h1 {
+	margin-top: 0;
+	font-size: 22px;
+}
+
+h2 {
+	margin-top: 0;
+	font-size: 20px;
+}
+
+h3 {
+	margin-top: 0;
+	font-size: 18px;
+}
+
+h4 {
+	margin-top: 0;
+	font-size: 16px;
+}
+
+h5 {
+	margin-top: 0;
+	font-size: 14px;
+}
+
+h6 {
+	margin-top: 0;
+	font-size: 12px;
+}
+
+code {
+	font-size: 1.2em;
+}
+
+ul {
+	padding-inline-start: 20px;
+}
+
+.root {
+	/* display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	background-color: #d35858; */
+}
+.game {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	gap: 12px;
+	padding: 12px;
+	height: 500px;
+}
+
+.game-board {
+	text-align: center;
+}
+
+.square {
+	background: #fff;
+	border: 1px solid #7197ff;
+	float: left;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 34px;
+	height: 60px;
+	margin-right: -1px;
+	margin-top: -1px;
+	padding: 0;
+	text-align: center;
+	width: 60px;
+	cursor: pointer;
+}
+
+.square:hover {
+	background-color: #dff2ff;
+}
+
+.status {
+	margin-bottom: 10px;
+}
+
+.game-info ul {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 4px;
+	list-style: none;
+	& li {
+		flex-grow: 1;
+	}
+}
+
+.status {
+	display: flex;
+	flex-direction: column;
+}
+
+.status.winner {
+	font-weight: bold;
+}
+
+.game-info ul button {
+	padding: 2px;
+	width: 100%;
+	border: 1px solid #7197ff;
+	background: #ffffff;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.game-info ul button:hover {
+	background-color: #dff2ff;
+}
