@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adição de Bloco</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="p-12 space-y-4 max-w-8xl bg-gray-900 h-dvh">
+        <div th:replace="~{components/header :: header}"></div>
+
+        <h3 class="text-xl">Adicionar Bloco</h3>
+
+        <main class="bg-gray-800 border-2 border-zinc-700 rounded-lg p-4 space-y-2">
+            <label for="name" class="p-2 font-semibold">Nome do Bloco:</label>
+            <input type="text" id="name" class="p-2 border-2 border-zinc-700 bg-zinc-800 rounded-md">
+            <br>
+            <label for="description" class="p-2 font-semibold">Descrição:</label>
+            <input type="text" id="description" class="p-2 border-2 border-zinc-700 bg-zinc-800 rounded-md">
+        </main>
+    </div>
+</body>
+</html>
