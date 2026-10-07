@@ -46,14 +46,14 @@ export default class TowerSelection {
             text.width,
             0,
             tower.icon
-        ).setOrigin(2.2, 0.5).setScale(0.1);
+        ).setOrigin(2.2, 0.5).setDisplaySize(50, 50);
 
         buttonContainer.add([text, icon]);
 
         const hitArea = new Phaser.Geom.Rectangle(
             -text.width,
             -text.height / 2,
-            text.width + icon.width,
+            text.displayWidth * 1.5 + icon.displayWidth,
             text.height
         );
 
