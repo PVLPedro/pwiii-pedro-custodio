@@ -3,7 +3,70 @@
 
 @source "../../templates/**/*.html";
 
+@theme {
+    --color-grad-one: hsl(245, 100%, 20%);
+    --color-grad-two: hsl(255, 100%, 20%);
+    --color-grad-three: hsl(265, 100%, 20%);
+    --color-grad-four: hsl(275, 100%, 20%);
+    --color-grad-five: hsl(280, 100%, 20%);
+
+    --color-header-grad-one: hsl(270, 65%, 40%);
+    --color-header-grad-two: hsl(245, 60%, 40%);
+    --color-header-grad-three: hsl(260, 70%, 40%);
+}
+
+.alelo {
+    --color-gradient-primary: hsl(250, 50%, 15%);
+    --color-gradient-secondary: hsl(270, 40%, 14%);
+    --color-gradient-tertiary: hsl(240, 30%, 13%);
+}
+
 * {
     font-family: 'Poppins', sans-serif !important;
     color: white;
+}
+
+input:focus {
+    outline: none;
+}
+
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.body-bg {
+    background-size: 120% 120%;
+    animation: moveGradient 15s ease-in-out infinite;
+    background-color: hsl(270, 5%, 13%);
+    background-image:
+        radial-gradient(at 20% 20%, var(--color-grad-one) 0px, transparent 60%),
+        radial-gradient(at 80% 40%, var(--color-grad-two) 0px, transparent 60%),
+        radial-gradient(at 40% 85%, var(--color-grad-three) 0px, transparent 60%),
+        radial-gradient(at 90% 85%, var(--color-grad-four) 0px, transparent 60%),
+        radial-gradient(at 10% 80%, var(--color-grad-five) 0px, transparent 30%);
+    background-blend-mode: screen;
+}
+
+/* .body-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("./img/background.avif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  z-index: -1;
+} */
+
+
+.header-bg {
+    background-color: hsl(270, 80%, 30%);
+    background-image:
+        radial-gradient(at 20% 20%, var(--color-header-grad-one) 0px, transparent),
+        radial-gradient(at 50% 40%, var(--color-header-grad-two) 0px, transparent),
+        radial-gradient(at 80% 85%, var(--color-header-grad-three) 0px, transparent);
+    background-blend-mode: screen;
 }
