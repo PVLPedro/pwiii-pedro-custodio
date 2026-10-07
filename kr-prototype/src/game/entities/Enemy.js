@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 
+let healthBarWidth = 30;
 export default class Enemy extends Phaser.GameObjects.Arc {
 
     constructor(scene, path, data) {
@@ -17,8 +18,6 @@ export default class Enemy extends Phaser.GameObjects.Arc {
             data.color
         );
 
-        this.scene = scene;
-
         this.path = path;
         this.pathLength = path.getLength();
         this.pathDistance = 0;
@@ -32,6 +31,31 @@ export default class Enemy extends Phaser.GameObjects.Arc {
         this.reward = data.reward;
         this.color = data.color;
 
+        this.container = scene.add
+            .container(start.x, start.y - 20)
+            .setDepth(100);
+
+        this.healthBarBg = scene.add.rectangle(
+            0,
+            0,
+            healthBarWidth,
+            5,
+            0x002200
+        );
+
+        this.healthBar = scene.add.rectangle(
+            0,
+            0,
+            healthBarWidth,
+            5,
+            0x00aa00
+        );
+
+        this.container.add([
+            this.healthBarBg,
+            this.healthBar
+        ]);
+
         scene.add.existing(this);
     }
 
@@ -44,31 +68,49 @@ export default class Enemy extends Phaser.GameObjects.Arc {
         if (this.pathDistance >= this.pathLength) {
 
             this.scene.lifeSystem.loseLife(this.lifes);
-
             this.destroy();
 
             return;
         }
 
-        const point = this.path.getPoint(this.pathDistance / this.pathLength);
+        const point = this.path.getPoint(
+            this.pathDistance / this.pathLength
+        );
 
-        this.setPosition(point.x, point.y).setDepth(point.y);
+        this.setPosition(point.x, point.y)
+            .setDepth(point.y);
+
+        this.container
+            .setPosition(point.x, point.y - 20)
+            .setDepth(point.y);
     }
 
     takeDamage(amount) {
-        
+
         this.health -= amount;
+
+        this.updateHealthBar();
 
         if (this.health <= 0) {
 
             this.scene.moneySystem.gainMoney(this.reward);
-
             this.destroy();
 
             return;
         }
 
         this.flashDamage();
+    }
+
+    updateHealthBar() {
+
+        const percentage = Phaser.Math.Clamp(
+            this.health / this.maxHealth,
+            0,
+            1
+        );
+
+        this.healthBar.width = healthBarWidth * percentage;
     }
 
     flashDamage() {
@@ -81,5 +123,15 @@ export default class Enemy extends Phaser.GameObjects.Arc {
                 this.setFillStyle(this.color);
             }
         });
+    }
+
+    destroy(fromScene) {
+
+        if (this.container) {
+            this.container.destroy();
+            this.container = null;
+        }
+
+        super.destroy(fromScene);
     }
 }
