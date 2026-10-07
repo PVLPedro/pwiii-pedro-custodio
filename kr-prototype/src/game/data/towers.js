@@ -48,11 +48,11 @@ export const towerTypes = {
             max: 16,
         },
         range: 180,
-        attackCooldown: 2000,
+        attackCooldown: 3000,
 
         projectileType: 'bomb',
         projectileSpeed: 300,
-        explosionRadius: 50,
+        explosionRadius: 65,
         
         size: 50,
         color: 0xF7931E

@@ -13,14 +13,24 @@ import * as Phaser from 'phaser';
 
 // Cada spec: t = posição no caminho (0 a 1), side = lado da estrada (1 ou -1), offset = distância do centro
 export const slotSpecs = [
-    { t: 0.08, side:  1 },
-    { t: 0.20, side: -1 },
-    { t: 0.32, side:  1, offset: 80 },
-    { t: 0.45, side: -1 },
-    { t: 0.55, side:  1 },
-    { t: 0.68, side: -1 },
-    { t: 0.80, side:  1 },
-    { t: 0.92, side: -1 },
+    { t: 0.1, side: 1 },
+    { t: 0.14, side: -1 },
+    { t: 0.2, side: -1 },
+    { t: 0.25, side: 1 },
+    { t: 0.3, side: -1, },
+    { t: 0.35, side: 1, },
+    { t: 0.4, side: -1 },
+    { t: 0.45, side: 1 },
+    { t: 0.5, side: -1 },
+    { t: 0.55, side: 1 },
+    { t: 0.6, side: -1 },
+    { t: 0.65, side: -1 },
+    { t: 0.7, side: 1 },
+    { t: 0.75, side: 1 },
+    { t: 0.8, side: -1 },
+    { t: 0.85, side: 1 },
+    { t: 0.9, side:-1 },
+    { t: 0.95, side: -1 },
 ];
 
 export function generateSlots(path, specs, {

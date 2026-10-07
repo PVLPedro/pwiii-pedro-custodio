@@ -34,6 +34,7 @@ export default class SlotManager {
             slot.setInteractive();
 
             slot.on('pointerdown', () => {
+                
                 this.uiManager.showTowerSelection(slot);
             });
 

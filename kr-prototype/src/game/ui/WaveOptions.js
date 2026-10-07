@@ -22,7 +22,7 @@ export default class WaveOptions {
         this.container = this.scene.add.container(
             0,
             0
-        );
+        ).setDepth(100);
 
         const waypoints = [
             { x: this.scene.width * 0.20, y: -20 },

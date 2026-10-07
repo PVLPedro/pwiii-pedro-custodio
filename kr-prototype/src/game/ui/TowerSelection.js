@@ -9,7 +9,7 @@ export default class TowerSelection {
         this.towerManager = towerManager;
         this.selectedSlot = null;
 
-        this.container = this.scene.add.container(0, 0).setVisible(false);
+        this.container = this.scene.add.container(0, 0).setVisible(false).setDepth(100);
         
         this.createMenu();
     }
@@ -60,8 +60,9 @@ export default class TowerSelection {
         buttonContainer.setInteractive(
             hitArea,
             Phaser.Geom.Rectangle.Contains
-        ).setDepth(9999)
-            .on('pointerdown', () => this.handleSelection(tower));
+        ).setDepth(9999).on('pointerdown', () => {
+            this.handleSelection(tower)
+        });
 
         return buttonContainer;
     }
@@ -77,8 +78,17 @@ export default class TowerSelection {
 
     show(slot) {
 
-        this.selectedSlot = slot;
+        console.log(this.container.visible);
 
+        if (this.container.visible && this.selectedSlot == slot) {
+
+            this.hide();
+
+            return
+        }
+
+        this.selectedSlot = slot;
+        
         this.container.setPosition(
             slot.x,
             slot.y
