@@ -3,12 +3,26 @@ import * as Phaser from 'phaser';
 export default class CombatSystem {
 
     constructor(scene, enemies) {
+
         this.scene = scene;
         this.enemies = enemies;
     }
 
     rollDamage(damage) {
-        return Phaser.Math.Between(damage.min, damage.max);
+
+        return Phaser.Math.Between(
+            damage.min,
+            damage.max
+        );
+    }
+
+    applyDamage(target, amount) {
+
+        if (!target || !target.active) {
+            return;
+        }
+
+        target.takeDamage(amount);
     }
 
     dealDamage(target, damage) {
@@ -17,14 +31,17 @@ export default class CombatSystem {
             return;
         }
 
-        // const damage = this.rollDamage(damage);
-        
-        target.takeDamage(damage);
+        const finalDamage = this.rollDamage(damage);
+
+        this.applyDamage(
+            target,
+            finalDamage
+        );
     }
 
     dealAreaDamage(x, y, radius, damage) {
 
-        const finalDamage = this.rollDamage(damage);
+        const baseDamage = this.rollDamage(damage);
 
         this.enemies.forEach(enemy => {
 
@@ -39,10 +56,28 @@ export default class CombatSystem {
                 enemy.y
             );
 
-            if (distance <= radius) {
-
-                this.dealDamage(enemy, finalDamage);
+            if (distance > radius) {
+                return;
             }
+
+            let finalDamage = baseDamage;
+
+            if (damage.falloff) {
+
+                const damageMultiplier = Math.max(
+                    damage.falloff.minimum,
+                    1 - (distance / radius)
+                );
+
+                finalDamage = Math.floor(
+                    baseDamage * damageMultiplier
+                );
+            }
+
+            this.applyDamage(
+                enemy,
+                finalDamage
+            );
         });
     }
 }

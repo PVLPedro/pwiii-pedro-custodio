@@ -11,17 +11,16 @@ export function buildRoundedPath(points, defaultRadius = 80) {
         const toPrev = new Phaser.Math.Vector2(prev.x - curr.x, prev.y - curr.y);
         const toNext = new Phaser.Math.Vector2(next.x - curr.x, next.y - curr.y);
 
-        // O raio nunca passa da metade do segmento, pra curvas não se atropelarem
-        const r = Math.min(
+        const radius = Math.min(
             curr.radius ?? defaultRadius,
             toPrev.length() / 2,
             toNext.length() / 2
         );
 
         const start = new Phaser.Math.Vector2(curr.x, curr.y)
-            .add(toPrev.normalize().scale(r));
+            .add(toPrev.normalize().scale(radius));
         const end = new Phaser.Math.Vector2(curr.x, curr.y)
-            .add(toNext.normalize().scale(r));
+            .add(toNext.normalize().scale(radius));
 
         path.lineTo(start.x, start.y);
         path.quadraticBezierTo(end.x, end.y, curr.x, curr.y);

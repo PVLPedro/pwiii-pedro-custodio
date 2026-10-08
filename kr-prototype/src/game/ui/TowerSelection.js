@@ -78,8 +78,6 @@ export default class TowerSelection {
 
     show(slot) {
 
-        console.log(this.container.visible);
-
         if (this.container.visible && this.selectedSlot == slot) {
 
             this.hide();

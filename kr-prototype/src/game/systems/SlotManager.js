@@ -1,23 +1,17 @@
 import Slot from '../entities/Slot';
+import { GameEvents } from '../constants/events';
 
 export default class SlotManager {
 
-    constructor(scene, slotData, towerManager, uiManager) {
+    constructor(scene, slotData, towerManager) {
 
         this.scene = scene;
 
         this.towerManager = towerManager;
 
-        this.uiManager = uiManager;
-
         this.slots = [];
 
         this.createSlots(slotData);
-    }
-
-    setUIManager(uiManager) {
-
-        this.uiManager = uiManager;
     }
 
     createSlots(slotData) {
@@ -34,8 +28,11 @@ export default class SlotManager {
             slot.setInteractive();
 
             slot.on('pointerdown', () => {
-                
-                this.uiManager.showTowerSelection(slot);
+
+                this.scene.events.emit(
+                    GameEvents.SLOT_CLICKED,
+                    slot
+                );
             });
 
             return slot;

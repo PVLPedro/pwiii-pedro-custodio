@@ -8,8 +8,6 @@ import ProjectileManager from '../systems/ProjectileManager';
 import TowerManager from '../systems/TowerManager';
 import CombatSystem from '../systems/CombatSystem';
 
-import UIManager from '../ui/UIManager';
-
 import { waves } from '../data/waves';
 // import { slots } from '../data/levels';
 import { slotSpecs, generateSlots } from '../data/levels';
@@ -38,24 +36,13 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
 
-        this.cameras.main.setBackgroundColor('#222222');
+        this.cameras.main.setBackgroundColor('#423130');
 
         this.centerX = this.scale.width / 2;
         this.centerY = this.scale.height / 2;
 
         this.width = this.scale.width;
         this.height = this.scale.height;
-
-        this.add.text(
-            this.scale.width / 2,
-            50,
-            'FASE 1',
-            {
-                fontSize: '32px',
-                color: '#ffffff'
-            }
-        ).setOrigin(0.5);
-
 
         // =========================
         // CAMINHO
@@ -157,21 +144,15 @@ export default class GameScene extends Phaser.Scene {
             this.slotManager
         );
 
-        // UI
+        // HUD (cena paralela, desenhada por cima)
 
-        this.uiManager = new UIManager(
-            this,
-            this.towerManager,
-            this.waveManager
-        );
+        this.scene.launch('HudScene', { 
+            gameScene: this
+        });
 
-        this.waveManager.setUIManager(
-            this.uiManager
-        );
-
-        this.slotManager.setUIManager(
-            this.uiManager
-        );
+        this.events.once('shutdown', () => {
+            this.scene.stop('HudScene');
+        });
     }
 
 
@@ -182,7 +163,5 @@ export default class GameScene extends Phaser.Scene {
         this.towerManager.update(delta);
 
         this.projectileManager.update(delta);
-
-        this.uiManager.update();
     }
 }

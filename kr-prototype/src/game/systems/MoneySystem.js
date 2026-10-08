@@ -1,4 +1,4 @@
-import MoneyDisplay from '../ui/MoneyDisplay';
+import { GameEvents } from '../constants/events';
 
 export default class MoneySystem {
 
@@ -9,11 +9,12 @@ export default class MoneySystem {
         this.money = initialMoney;
 
         this.refundRate = refundRate;
+    }
 
-        this.moneyDisplay = new MoneyDisplay(
-            scene,
-            this.scene.centerX,
-            140,
+    emitChange() {
+
+        this.scene.events.emit(
+            GameEvents.MONEY_CHANGED,
             this.money
         );
     }
@@ -31,9 +32,7 @@ export default class MoneySystem {
 
         this.money -= amount;
 
-        this.moneyDisplay.update(
-            this.money
-        );
+        this.emitChange();
 
         return true;
     }
@@ -42,9 +41,7 @@ export default class MoneySystem {
 
         this.money += amount;
 
-        this.moneyDisplay.update(
-            this.money
-        );
+        this.emitChange();
     }
 
     refundMoney(originalCost) {

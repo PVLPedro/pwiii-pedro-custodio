@@ -25,7 +25,7 @@ export default class WaveOptions {
         ).setDepth(100);
 
         const waypoints = [
-            { x: this.scene.width * 0.20, y: -20 },
+            { x: this.scene.scale.width * 0.20, y: -20 },
         ];
 
         const initialPoint = waypoints[0];
@@ -67,6 +67,12 @@ export default class WaveOptions {
     }
 
     show() {
+
+        const info = this.waveManager.getEarlyStartInfo();
+
+        if (!info || info.currentWave == info.totalWaves) {
+            return;
+        }
 
         this.container.setVisible(true);
     }

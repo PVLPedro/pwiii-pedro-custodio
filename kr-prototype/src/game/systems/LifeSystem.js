@@ -1,4 +1,4 @@
-import LivesDisplay from '../ui/LivesDisplay';
+import { GameEvents } from '../constants/events';
 
 export default class LifeSystem {
 
@@ -7,11 +7,12 @@ export default class LifeSystem {
         this.scene = scene;
 
         this.lives = initialLives;
+    }
 
-        this.livesDisplay = new LivesDisplay(
-            scene,
-            this.scene.centerX,
-            100,
+    emitChange() {
+
+        this.scene.events.emit(
+            GameEvents.LIVES_CHANGED,
             this.lives
         );
     }
@@ -24,17 +25,13 @@ export default class LifeSystem {
 
             this.lives = 0;
 
-            this.livesDisplay.update(
-                this.lives
-            );
+            this.emitChange();
 
             this.scene.scene.start('GameOver');
 
             return;
         }
 
-        this.livesDisplay.update(
-            this.lives
-        );
+        this.emitChange();
     }
 }

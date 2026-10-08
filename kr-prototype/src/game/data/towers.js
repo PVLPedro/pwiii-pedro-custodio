@@ -46,6 +46,9 @@ export const towerTypes = {
         damage: {
             min: 8,
             max: 16,
+            falloff: {
+                minimum: 0.6,
+            },
         },
         range: 180,
         attackCooldown: 3000,

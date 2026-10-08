@@ -1,8 +1,9 @@
 import EnemySpawner from './EnemySpawner';
+import { GameEvents } from '../constants/events';
 
 export default class WaveManager {
 
-    constructor(scene, path, waves, uiManager) {
+    constructor(scene, path, waves) {
 
         this.scene = scene;
         this.waves = waves;
@@ -14,8 +15,6 @@ export default class WaveManager {
             path
         );
 
-        this.uiManager = uiManager;
-
         this.nextWaveTimer = null;
 
         this.defaultEarlyStartReward = 25;
@@ -26,11 +25,6 @@ export default class WaveManager {
         this.nextWaveDelay = 0;
     }
 
-    setUIManager(uiManager) {
-
-        this.uiManager = uiManager;
-    }
-
     startWave() {
 
         if (this.currentWave >= this.waves.length) {
@@ -38,8 +32,6 @@ export default class WaveManager {
         }
 
         const wave = this.waves[this.currentWave];
-
-        this.uiManager.hideStartWaveBtn();
 
         this.spawner.spawnGroups(
             wave.groups,
@@ -49,6 +41,15 @@ export default class WaveManager {
 
                 this.finishWave();
             }
+        );
+
+        const info = this.getWavesInfo();
+
+        info.currentWave++
+
+        this.scene.events.emit(
+            GameEvents.WAVE_STARTED,
+            info
         );
     }
 
@@ -60,6 +61,8 @@ export default class WaveManager {
 
         const wave = this.waves[this.currentWave];
 
+        const info = this.getEarlyStartInfo();
+
         this.currentWave++;
 
         this.nextWaveStartTime =
@@ -68,7 +71,10 @@ export default class WaveManager {
         this.nextWaveDelay =
             wave.nextWaveDelay * 1000;
 
-        this.uiManager.showStartWaveBtn();
+        this.scene.events.emit(
+            GameEvents.WAVE_FINISHED,
+            info,
+        );
 
         this.nextWaveTimer =
             this.scene.time.delayedCall(
@@ -98,8 +104,6 @@ export default class WaveManager {
         this.scene.moneySystem.gainMoney(
             info.reward
         );
-
-        this.uiManager.hideStartWaveBtn();
 
         this.startWave();
     }
