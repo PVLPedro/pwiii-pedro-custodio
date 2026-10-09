@@ -10,17 +10,23 @@ export default class Slot extends Phaser.GameObjects.Rectangle {
             y,
             50,
             50,
-            0x00ff00,
-            0.1
+            0x002222,
+            0.5
         );
 
         this.scene = scene;
 
-        this.image = scene.add.image(
+        this.setStrokeStyle(4, 0x444444, 1);
+
+        this.text = scene.add.text(
             x,
             y,
-            'slot'
-        ).setOrigin(0.5).setDepth(100).setScale(0.23);
+            'Slot',
+            {
+                fontSize: '16px',
+                color: '#ffffff'
+            }
+        ).setOrigin(0.5).setDepth(100);
 
         this.initialCost = initialCost;
 

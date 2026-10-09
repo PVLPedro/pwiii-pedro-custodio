@@ -34,7 +34,7 @@ export default class Enemy extends Phaser.GameObjects.Arc {
         this.size = data.size;
 
         this.container = scene.add
-            .container(start.x, start.y - 20)
+            .container(start.x, start.y - this.size * 2)
             .setDepth(100);
 
         this.healthBarBg = scene.add.rectangle(
@@ -83,7 +83,7 @@ export default class Enemy extends Phaser.GameObjects.Arc {
             .setDepth(point.y);
 
         this.container
-            .setPosition(point.x, point.y - 20)
+            .setPosition(point.x, point.y - this.size * 2)
             .setDepth(point.y);
     }
 

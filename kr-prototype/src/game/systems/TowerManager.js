@@ -42,7 +42,7 @@ export default class TowerManager {
 
         this.towers.push(tower);
 
-        slot.image.setVisible(false);
+        // slot.image.setVisible(false);
         slot.setVisible(false);
         slot.disableInteractive();
 
