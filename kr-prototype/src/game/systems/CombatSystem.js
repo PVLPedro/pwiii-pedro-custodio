@@ -25,7 +25,7 @@ export default class CombatSystem {
         target.takeDamage(amount);
     }
 
-    dealDamage(target, damage) {
+    dealDamage(target, damage, debuff) {
 
         if (!target || !target.active) {
             return;
@@ -39,9 +39,11 @@ export default class CombatSystem {
         );
     }
 
-    dealAreaDamage(x, y, radius, damage) {
+    dealAreaDamage(x, y, radius, damage, debuff) {
 
         const baseDamage = this.rollDamage(damage);
+
+        // console.log(debuff);
 
         this.enemies.forEach(enemy => {
 
@@ -76,8 +78,31 @@ export default class CombatSystem {
 
             this.applyDamage(
                 enemy,
-                finalDamage
+                finalDamage,
+            );
+
+            this.applyDebuff(
+                enemy,
+                debuff,
             );
         });
+    }
+
+    applyDebuff(target, debuff) {
+
+        if (!debuff) return;
+
+        if (debuff.type == 'slow') {
+
+            target.speed = (target.actualSpeed * debuff.value) / 100;
+
+            this.scene.time.delayedCall(
+                debuff.duration * 1000,
+                () => {
+                    
+                    target.speed = target.actualSpeed;
+                }
+            )
+        }
     }
 }

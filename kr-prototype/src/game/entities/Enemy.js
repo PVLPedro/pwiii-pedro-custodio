@@ -26,10 +26,12 @@ export default class Enemy extends Phaser.GameObjects.Arc {
         this.health = data.health;
         this.maxHealth = data.health;
         this.speed = data.speed;
+        this.actualSpeed = data.speed;
         this.damage = data.damage;
         this.lifes = data.lifes;
         this.reward = data.reward;
         this.color = data.color;
+        this.size = data.size;
 
         this.container = scene.add
             .container(start.x, start.y - 20)
@@ -37,7 +39,7 @@ export default class Enemy extends Phaser.GameObjects.Arc {
 
         this.healthBarBg = scene.add.rectangle(
             0,
-            0,
+            0 + this.size / 2,
             healthBarWidth,
             5,
             0x002200
@@ -45,7 +47,7 @@ export default class Enemy extends Phaser.GameObjects.Arc {
 
         this.healthBar = scene.add.rectangle(
             0,
-            0,
+            0 + this.size / 2,
             healthBarWidth,
             5,
             0x00aa00

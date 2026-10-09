@@ -11,7 +11,8 @@ export default class BombProjectile extends Projectile {
         damage,
         speed,
         combatSystem,
-        explosionRadius
+        explosionRadius,
+        debuff,
     ) {
 
         super(
@@ -25,6 +26,7 @@ export default class BombProjectile extends Projectile {
         );
 
         this.explosionRadius = explosionRadius;
+        this.debuff = debuff;
 
         this.setFillStyle(0xff6600);
     }
@@ -101,7 +103,8 @@ export default class BombProjectile extends Projectile {
             this.x,
             this.y,
             this.explosionRadius,
-            this.damage
+            this.damage,
+            this.debuff
         );
 
         this.destroy();

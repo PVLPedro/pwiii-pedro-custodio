@@ -68,9 +68,12 @@ export default class WaveOptions {
 
     show() {
 
-        const info = this.waveManager.getEarlyStartInfo();
+        const info = this.waveManager.getWavesInfo();
 
-        if (!info || info.currentWave == info.totalWaves) {
+        if (!info || info.currentWave >= info.totalWaves) {
+
+            console.log(info);
+            
             return;
         }
 
@@ -91,8 +94,7 @@ export default class WaveOptions {
         }
 
         this.button.setText(
-            `Adiantar Onda ${info.currentWave}/${info.totalWaves}\n` +
-            // `Recompensa: $${info.reward}\n` +
+            `Adiantar Onda ${info.currentWave}/${info.totalWaves} por bônus $\n` +
             `Tempo: ${(
                 (info.remainingTime / 1000)
             ).toFixed(0)}s`

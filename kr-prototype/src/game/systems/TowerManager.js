@@ -1,5 +1,7 @@
 import Tower from '../entities/Tower';
 
+import { GameEvents } from '../constants/events';
+
 export default class TowerManager {
 
     constructor(scene, enemies, projectileManager) {
@@ -21,8 +23,10 @@ export default class TowerManager {
 
         const moneySystem = this.scene.moneySystem;
 
+        let built = false;
+
         if (!moneySystem.spendMoney(towerType.cost)) {
-            return;
+            return { built };
         }
 
         const tower = new Tower(
@@ -46,14 +50,23 @@ export default class TowerManager {
 
         tower.on('pointerdown', () => {
 
-            this.sellTower(tower);
+            this.scene.events.emit(
+                GameEvents.TOWER_CLICKED,
+                tower
+            );
 
         });
+
+        built = true;
+
+        return { built, tower };
     }
 
     sellTower(tower) {
 
         const slot = tower.buildSlot;
+
+        let sold = false;
 
         this.scene.moneySystem.refundMoney(
             tower.cost
@@ -66,6 +79,10 @@ export default class TowerManager {
         );
 
         this.slotManager.releaseSlot(slot);
+
+        sold = true;
+
+        return { sold, slot };
     }
 
     update(delta) {

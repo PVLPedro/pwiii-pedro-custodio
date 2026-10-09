@@ -41,7 +41,8 @@ export default class ProjectileManager {
                     data.damage,
                     data.speed,
                     this.combatSystem,
-                    data.explosionRadius
+                    data.explosionRadius,
+                    data.debuff
                 );
 
                 break;

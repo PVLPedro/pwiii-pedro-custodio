@@ -3,9 +3,7 @@ import * as Phaser from 'phaser';
 import { GameEvents } from '../constants/events';
 
 import RunInfoDisplay from '../ui/RunInfoDisplay';
-
-import TowerSelection from '../ui/TowerSelection';
-import TowerPanel from '../ui/TowerPanel';
+import SelectionPanel from '../ui/SelectionPanel';
 import WaveOptions from '../ui/WaveOptions';
 
 export default class HudScene extends Phaser.Scene {
@@ -29,7 +27,7 @@ export default class HudScene extends Phaser.Scene {
 
         this.load.path = 'assets/images/';
 
-        this.load.image('run-info-bg', 'run-info-bg.jpg');
+        this.load.image('run-info-bg', 'run-info-bg.png');
     }
 
     create() {
@@ -53,21 +51,16 @@ export default class HudScene extends Phaser.Scene {
             }
         ).setOrigin(0.5);
 
-        const info = this.gameScene.waveManager.getWavesInfo();
+        const info = waveManager.getWavesInfo();
 
         this.runInfoDisplay = new RunInfoDisplay(
             this,
-            this.scale.width - 300,
+            this.scale.width - 350,
             100,
             lifeSystem.lives,
             moneySystem.money,
             info.currentWave,
-            info.totalWaves,
-        );
-
-        this.towerSelection = new TowerSelection(
-            this,
-            towerManager
+            info.totalWaves
         );
 
         this.waveOptions = new WaveOptions(
@@ -75,15 +68,10 @@ export default class HudScene extends Phaser.Scene {
             waveManager
         );
 
-        this.towerPanel = new TowerPanel(this);
-
-        this.input.keyboard.on('keydown-T', () => {
-            this.towerPanel.show();
-        });
-
-        this.input.keyboard.on('keydown-E', () => {
-            this.towerPanel.hide();
-        });
+        this.selectionPanel = new SelectionPanel(
+            this,
+            towerManager
+        );
 
         this.bindGameEvents();
     }
@@ -93,6 +81,7 @@ export default class HudScene extends Phaser.Scene {
         const gameEvents = this.gameScene.events;
 
         const listeners = {
+
             [GameEvents.LIVES_CHANGED]: lives =>
                 this.runInfoDisplay.updateLives(lives),
 
@@ -100,15 +89,18 @@ export default class HudScene extends Phaser.Scene {
                 this.runInfoDisplay.updateMoney(money),
 
             [GameEvents.SLOT_CLICKED]: slot =>
-                this.towerSelection.show(slot),
+                this.selectionPanel.showSlot(slot),
+
+            [GameEvents.TOWER_CLICKED]: tower =>
+                this.selectionPanel.showTower(tower),
 
             [GameEvents.WAVE_STARTED]: info => {
                 this.runInfoDisplay.updateWaves(info);
-                this.waveOptions.hide()
+                this.waveOptions.hide();
             },
 
             [GameEvents.WAVE_FINISHED]: () =>
-                this.waveOptions.show(),
+                this.waveOptions.show()
         };
 
         Object.entries(listeners).forEach(([event, listener]) => {
@@ -116,9 +108,11 @@ export default class HudScene extends Phaser.Scene {
         });
 
         this.events.once('shutdown', () => {
+
             Object.entries(listeners).forEach(([event, listener]) => {
                 gameEvents.off(event, listener);
             });
+
         });
     }
 

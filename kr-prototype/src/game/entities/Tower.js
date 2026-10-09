@@ -37,6 +37,8 @@ export default class Tower extends Phaser.GameObjects.Rectangle {
         this.damage = data.damage;
         this.attackCooldown = data.attackCooldown;
 
+        this.debuff = data.debuff;
+
         this.projectileType = data.projectileType;
         this.projectileSpeed = data.projectileSpeed;
         this.explosionRadius = data.explosionRadius;
@@ -146,7 +148,8 @@ export default class Tower extends Phaser.GameObjects.Rectangle {
                 target: this.target,
                 damage: this.damage,
                 speed: this.projectileSpeed,
-                explosionRadius: this.explosionRadius
+                explosionRadius: this.explosionRadius,
+                debuff: this.debuff
             }
         );
     }
