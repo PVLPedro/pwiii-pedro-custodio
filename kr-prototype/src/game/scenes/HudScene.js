@@ -55,7 +55,7 @@ export default class HudScene extends Phaser.Scene {
 
         this.runInfoDisplay = new RunInfoDisplay(
             this,
-            this.scale.width - 350,
+            this.scale.width - 300,
             100,
             lifeSystem.lives,
             moneySystem.money,

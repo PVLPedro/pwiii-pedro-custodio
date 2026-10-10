@@ -1,4 +1,3 @@
-import TowerSelection from './TowerSelection';
 import WaveOptions from './WaveOptions';
 
 export default class UIManager {
@@ -10,11 +9,6 @@ export default class UIManager {
         this.towerManager = towerManager;
 
         this.waveManager = waveManager;
-
-        this.towerSelection = new TowerSelection(
-            scene,
-            towerManager
-        );
 
         this.waveOptions = new WaveOptions(
             scene,
@@ -35,16 +29,6 @@ export default class UIManager {
                 this.update();
             }
         });
-    }
-
-    showTowerSelection(slot) {
-
-        this.towerSelection.show(slot);
-    }
-
-    hideTowerSelection() {
-
-        this.towerSelection.hide();
     }
 
     showStartWaveBtn() {
