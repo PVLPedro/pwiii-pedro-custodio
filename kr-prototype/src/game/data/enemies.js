@@ -5,11 +5,15 @@ export const enemyTypes = {
 
         health: 30,
         speed: 60,
-        damage: 5,
+        damage: {
+            min: 2,
+            max: 4
+        },
         lifes: 1,
         reward: 5,
         size: 12,
-        color: 0xAF5F00
+        color: 0xAF5F00,
+        // blockable: false,
     },
 
     orc: {
@@ -17,7 +21,10 @@ export const enemyTypes = {
 
         health: 80,
         speed: 45,
-        damage: 12,
+        damage: {
+            min: 10,
+            max: 14
+        },
         lifes: 1,
         reward: 9,
         size: 18,
@@ -25,11 +32,14 @@ export const enemyTypes = {
     },
 
     wolf: {
-        name: 'Wolf',
+        name: 'Lobo',
 
         health: 20,
         speed: 90,
-        damage: 6,
+        damage: {
+            min: 2,
+            max: 5
+        },
         lifes: 1,
         reward: 6,
         size: 10,
@@ -37,11 +47,14 @@ export const enemyTypes = {
     },
 
     ogre: {
-        name: 'Ogre',
+        name: 'Ogro',
 
         health: 200,
         speed: 33,
-        damage: 30,
+        damage: {
+            min: 20,
+            max: 40
+        },
         lifes: 3,
         reward: 25,
         size: 25,

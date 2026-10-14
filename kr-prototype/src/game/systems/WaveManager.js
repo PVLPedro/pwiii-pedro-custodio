@@ -3,16 +3,17 @@ import { GameEvents } from '../constants/events';
 
 export default class WaveManager {
 
-    constructor(scene, path, waves) {
+    constructor(scene, gamePath, waves) {
 
         this.scene = scene;
         this.waves = waves;
+        this.gamePath = gamePath;
 
         this.currentWave = 0;
 
-        this.spawner = new EnemySpawner(
-            scene,
-            path
+        this.enemySpawner = new EnemySpawner(
+            this.scene,
+            this.gamePath
         );
 
         this.nextWaveTimer = null;
@@ -33,14 +34,14 @@ export default class WaveManager {
 
         const wave = this.waves[this.currentWave];
 
-        this.spawner.spawnGroups(
+        this.enemySpawner.spawnGroups(
             wave.groups,
             wave.groupInterval * 1000,
             wave.repeats,
             () => {
-
                 this.finishWave();
-            }
+            },
+            wave.lanesOrder ?? []
         );
 
         const info = this.getWavesInfo();
@@ -160,6 +161,6 @@ export default class WaveManager {
 
     update(delta) {
 
-        this.spawner.update(delta);
+        this.enemySpawner.update(delta);
     }
 }

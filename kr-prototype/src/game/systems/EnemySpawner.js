@@ -1,116 +1,159 @@
+import * as Phaser from 'phaser';
+
 import Enemy from '../entities/Enemy';
+import { GameEvents } from '../constants/events';
 
 export default class EnemySpawner {
-
-    constructor(scene, path) {
-
+    constructor(scene, gamePath) {
         this.scene = scene;
-        this.path = path;
-
+        this.gamePath = gamePath;
         this.enemies = [];
+
+        this.laneSpacing = 12;
+        this.validLanes = [-1, 0, 1];
     }
 
-    spawn(type) {
+    resolveLane(lane) {
+
+        if (lane === 2) {
+            const randomIndex = Phaser.Math.Between(
+                0,
+                this.validLanes.length - 1
+            );
+
+            return this.validLanes[randomIndex];
+        }
+
+        if (!this.validLanes.includes(lane)) {
+            return 0;
+        }
+
+        return lane;
+    }
+
+    spawn(type, lane = 0) {
+
+        const resolvedLane = this.resolveLane(lane);
 
         const enemy = new Enemy(
             this.scene,
-            this.path,
-            type
+            this.gamePath,
+            type,
+            resolvedLane,
+            this.laneSpacing
         );
+
+        enemy.setInteractive();
+
+        enemy.on('pointerdown', () => {
+            this.scene.events.emit(
+                GameEvents.ENTITY_CLICKED,
+                enemy
+            );
+        });
 
         this.enemies.push(enemy);
 
         return enemy;
     }
 
-    spawnGroup(type, count, interval, onComplete) {
+    spawnGroup(
+        type,
+        count,
+        interval,
+        lanes = [],
+        defaultLane = 0,
+        order = 'normal',
+        onComplete
+    ) {
 
-        this.spawn(type);
+        const resolvedLanes = Array.from(
+            { length: count },
+            (_, index) => lanes[index] ?? defaultLane
+        );
 
-        if (count <= 1) {
+        if (order === 'reverse') {
+            resolvedLanes.reverse();
+        }
 
-            if (onComplete) {
-                onComplete();
+        let spawned = 0;
+
+        const spawnNext = () => {
+            this.spawn(type, resolvedLanes[spawned]);
+
+            spawned++;
+
+            if (spawned >= count) {
+                if (onComplete) onComplete();
+                return;
             }
 
+            this.scene.time.delayedCall(
+                interval * 1000,
+                spawnNext
+            );
+        };
+
+        if (count > 0) {
+            spawnNext();
+        } else if (onComplete) {
+            onComplete();
+        }
+    }
+
+    spawnGroups(
+        groups,
+        groupInterval,
+        repeats = 1,
+        onComplete,
+        lanesOrder = []
+    ) {
+        if (groups.length === 0 || repeats <= 0) {
+            if (onComplete) onComplete();
             return;
         }
 
-        let remaining = count - 1;
-
-        this.scene.time.addEvent({
-
-            delay: interval * 1000,
-
-            callback: () => {
-
-                this.spawn(type);
-
-                remaining--;
-
-                if (remaining === 0) {
-
-                    if (onComplete) {
-                        onComplete();
-                    }
-
-                }
-
-            },
-
-            repeat: count - 2
-
-        });
-    }
-
-    spawnGroups(groups, groupInterval, repeats = 1, onComplete) {
-
         let currentGroup = 0;
         let currentRepeat = 0;
+        let isFirstGroup = true;
 
         const spawnNextGroup = () => {
-
             if (currentGroup >= groups.length) {
-
                 currentRepeat++;
 
                 if (currentRepeat >= repeats) {
-
-                    if (onComplete) {
-                        onComplete();
-                    }
-
+                    if (onComplete) onComplete();
                     return;
                 }
 
                 currentGroup = 0;
             }
 
+            const group = groups[currentGroup];
+            const order = lanesOrder[currentRepeat] ?? 'normal';
+
+            currentGroup++;
+
             const spawn = () => {
-
-                const group = groups[currentGroup];
-
-                currentGroup++;
-
                 this.spawnGroup(
                     group.type,
                     group.count,
                     group.interval,
+                    group.lanes ?? [],
+                    group.defaultLane,
+                    order,
                     spawnNextGroup
                 );
             };
 
-            if (currentGroup === 0 && currentRepeat === 0) {
-
+            if (isFirstGroup) {
+                isFirstGroup = false;
                 spawn();
-
             } else {
-
                 this.scene.time.delayedCall(
                     groupInterval,
                     spawn
                 );
-
             }
         };
 
@@ -118,12 +161,8 @@ export default class EnemySpawner {
     }
 
     update(delta) {
-
         this.enemies.forEach(enemy => {
-
             enemy.update(delta);
-
         });
-
     }
 }

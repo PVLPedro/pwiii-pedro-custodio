@@ -7,10 +7,15 @@ import SlotManager from '../systems/SlotManager';
 import ProjectileManager from '../systems/ProjectileManager';
 import TowerManager from '../systems/TowerManager';
 import CombatSystem from '../systems/CombatSystem';
+import GamePath from '../paths/GamePath';
+import Troop from '../entities/Troop';
+import CommandPoint from '../entities/CommandPoint';
 
 import { waves } from '../data/waves';
 // import { slots } from '../data/levels';
 import { slotSpecs, generateSlots } from '../data/levels';
+import { drawPath } from '../utils/drawPath';
+import { createPathBoundsPolygon } from '../utils/createPathBoundsPolygon';
 import { buildRoundedPath } from '../utils/buildRoundedPath';
 
 export default class GameScene extends Phaser.Scene {
@@ -28,10 +33,12 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('magic', 'magic-icon.png');
         this.load.image('industrial', 'industrial-icon.png');
         this.load.image('alchemy', 'alchemy-icon.png');
+        this.load.image('resistence', 'resistence-icon.png');
+        this.load.image('mad', 'mad-icon.png');
 
         this.load.path = 'assets/images/';
 
-        this.load.image('slot', 'slot.webp')
+        this.load.image('slot', 'slot.webp');
     }
 
     create() {
@@ -63,12 +70,76 @@ export default class GameScene extends Phaser.Scene {
             { x: W + 20,   y: H * 0.60 }
         ];
 
-        const path = buildRoundedPath(waypoints, 90);
-        this.path = path;
+        
+        const gamePath = new GamePath(this, waypoints, {
+            width: 44,
+            hitAreaPadding: 5,
+            defaultRadius: 90,
+            drawPoints: 64,
+            hitAreaDivisions: 64,
+            color: 0x8a6d46,
+            alpha: 1,
+            depth: 0
+        });
 
-        const visualPath = this.add.graphics().setDepth(0);
-        visualPath.lineStyle(44, 0x8a6d46, 1);
-        path.draw(visualPath, 64);
+        gamePath.setInteractive();
+
+        this.path = gamePath.path;
+        this.gamePath = gamePath;
+
+        const distance = gamePath.getLength() * 0.5;
+
+        // Posição no centro da estrada
+        const center = gamePath.getPointAtDistance(distance);
+
+        // Posições nas três linhas
+        const laneA = gamePath.getLanePosition(distance, -1, 12);
+        const laneB = gamePath.getLanePosition(distance, 0, 12);
+        const laneC = gamePath.getLanePosition(distance, 1, 12);
+
+        console.log('Comprimento:', gamePath.getLength());
+        console.log('Centro:', center);
+        console.log('Linha -1:', laneA);
+        console.log('Linha 0:', laneB);
+        console.log('Linha 1:', laneC);
+
+        this.avaliableTroops = 4;
+
+        this.commandPoints = [];
+        this.troops = [];
+
+        this.gamePath.on('pointerdown', pointer => {
+
+            if (this.avaliableTroops > 0) {
+
+                const commandPoint = new CommandPoint(
+                    this,
+                    pointer.worldX,
+                    pointer.worldY,
+                    80
+                );
+
+                const troop = new Troop(this, commandPoint);
+
+                this.commandPoints.push(commandPoint);
+                this.troops.push(troop);
+
+                troop.setInteractive(
+                    new Phaser.Geom.Rectangle(0, 0, troop.width, troop.height), 
+                    Phaser.Geom.Rectangle.Contains
+                );
+                
+                troop.on('pointerdown', () => {
+
+                    troop.destroy();
+                    commandPoint.destroy();
+
+                    ++this.avaliableTroops;
+                })
+
+                --this.avaliableTroops;
+            }
+        });
 
         // Debug: marca os pontos de virada
         // const DEBUG_PATH = true;
@@ -103,7 +174,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.waveManager = new WaveManager(
             this,
-            this.path,
+            this.gamePath,
             waves,
         );
 
@@ -111,7 +182,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.combatSystem = new CombatSystem(
             this,
-            this.waveManager.spawner.enemies
+            this.waveManager.enemySpawner.enemies
         );
 
         // TORRES e PROJÉTEIS
@@ -123,7 +194,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.towerManager = new TowerManager(
             this,
-            this.waveManager.spawner.enemies,
+            this.waveManager.enemySpawner.enemies,
             this.projectileManager
         );
 
@@ -144,7 +215,7 @@ export default class GameScene extends Phaser.Scene {
             this.slotManager
         );
 
-        // HUD (cena paralela, desenhada por cima)
+        // HUD
 
         this.scene.launch('HudScene', { 
             gameScene: this
@@ -163,5 +234,11 @@ export default class GameScene extends Phaser.Scene {
         this.towerManager.update(delta);
 
         this.projectileManager.update(delta);
+
+        const enemies = this.waveManager.enemySpawner.enemies;
+
+        this.troops.forEach(troop => {
+            troop.update(enemies);
+        });
     }
 }

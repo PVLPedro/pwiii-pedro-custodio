@@ -11,7 +11,6 @@
 
 import * as Phaser from 'phaser';
 
-// Cada spec: t = posição no caminho (0 a 1), side = lado da estrada (1 ou -1), offset = distância do centro
 export const slotSpecs = [
     { t: 0.1, side: 1 },
     { t: 0.14, side: -1 },

@@ -41,7 +41,7 @@ export default class SlotManager {
 
     releaseSlot(slot) {
 
-        // slot.image.setVisible(true);
+        slot.text.setVisible(true);
         slot.setVisible(true);
         slot.setInteractive();
     }

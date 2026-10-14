@@ -5,6 +5,7 @@ import UIButton from './components/UIButton';
 
 import SlotContent from './contents/SlotContent';
 import TowerContent from './contents/TowerContent';
+import EntityContent from './contents/EntityContent';
 
 import SelectionHighlight from './components/SelectionHighlight';
 
@@ -94,10 +95,18 @@ export default class SelectionPanel {
             slot => this.showSlot(slot)
         );
 
+        this.entityContent = new EntityContent(
+            this.scene,
+            this.towerManager,
+            this.width,
+            this.height
+        );
+
         this.panel.add([
             this.background,
             this.slotContent.container,
             this.towerContent.container,
+            this.entityContent.container,
             this.title,
             this.closeButton
         ]);
@@ -124,12 +133,21 @@ export default class SelectionPanel {
         this.title.setText('ESPAÇO');
 
         this.towerContent.hide();
+        this.entityContent.hide();
         this.slotContent.show(slot);
 
         this.show();
     }
 
     showTower(tower) {
+
+        if (
+            this.mode === 'tower' &&
+            this.selectedObject === tower
+        ) {
+            this.hide();
+            return;
+        }
 
         this.selectedObject = tower;
         this.mode = 'tower';
@@ -142,7 +160,27 @@ export default class SelectionPanel {
         this.title.setText(tower.name);
 
         this.slotContent.hide();
+        this.entityContent.hide();
         this.towerContent.show(tower);
+
+        this.show();
+    }
+
+    showEntity(entity) {
+
+        this.selectedObject = entity;
+        this.mode = 'entity';
+
+        this.selectionHighlight.select(
+            entity,
+            'circle'
+        );
+
+        this.title.setText(entity.name);
+
+        this.slotContent.hide();
+        this.towerContent.hide();
+        this.entityContent.show();
 
         this.show();
     }
@@ -168,5 +206,14 @@ export default class SelectionPanel {
         if (this.towerContent) {
             this.towerContent.hide();
         }
+    }
+
+    update() {
+
+        if (this.mode === 'entity') {
+            this.entityContent.update(this.selectedObject)
+        }
+
+        this.selectionHighlight.update();
     }
 }
